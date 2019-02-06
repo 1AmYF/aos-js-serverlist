@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<!--
+Single-file serverlist for Ace of Spades Classic
+https://github.com/1AmYF/aos-js-serverlist
+-->
+<html lang="en">
+<head>
+	<title>Serverlist</title>
+	<meta charset="utf-8" />
+	<style>
+	body {
+		background-color: #202020;
+	}
+	body, table, th, td, caption {
+		color: #D3D3D3;
+		font-size: 0.95em;
+		font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+		text-align: left;
+		margin: 0;
+		padding: 0.4em;
+	}
+	label, select, input, button {
+		font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+		margin-right: 0.2em;
+	}
+	table {
+		min-width: 45em;
+	}
+	a {
+		color: #D3D3D3;
+		font-weight: bold;
+		text-decoration: none;
+	}
+	#summary {
+		float: left;
+	}
+	#refresh {
+		float: left;
+		margin-right: 1em;
+	}
+	#links {
+		float: right;
+	}
+	.link {
+		margin-left: 1em;
+	}
+	#options {
+		background-color: #D3D3D3;
+		color: #202020;
+		padding: 0.3em 0 0.3em 0.3em;
+		margin-top: 0.3em;
+	}
+	.options {
+		clear: both;
+		float: left;
+		display: block;
+		width: 100%;
+	}
+	.highlight {
+		color: #FFFFFF;
+		font-weight: bold;
+	}
+	tr {
+		cursor: pointer;
+	}
+	tbody tr:hover {
+		background-color: #333333;
+	}
+	tbody tr:active {
+		background-color: #111111;
+	}
+	.busy {
+		color: #D3D3D3;
+	}
+	.empty {
+		color: #878787;
+	}
+	body.light {
+		background-color: #F2F2F2;
+	}
+	.light {
+		color: #202020;
+	}
+	.light .busy {
+		color: #202020;
+	}
+	.light .empty {
+		color: #6D6D6D;
+	}
+	table.light tbody tr:hover {
+		background-color: #DDDDDD;
+	}
+	table.light tbody tr:active {
+		background-color: #FFFFFF;
+	}
+	.light .highlight {
+		color: #000000;
+	}
+	.hide {
+		display: none;
+	}
+	</style>
+	<script>
+	var jsonFile = "http://services.buildandshoot.com/serverlist.json";
+
+	var url = new URL(window.location.href);
+	var useLightTheme = url.searchParams.has("light");
+	var highlight = url.searchParams.get("highlight");
+	var useClipboard = url.searchParams.has("clipboard");
+	var showLocalhost = url.searchParams.has("local");
+	var showRefreshButton = url.searchParams.has("refresh");
+
+	function isNumeric(n) {
+		return !isNaN(parseFloat(n)) && isFinite(n);
+	}
+
+	function getSortableVal(val) {
+		if (val == null) {
+			val = "";
+		} else if (!isNumeric(val)) {
+			val = val.toLowerCase();
+		}
+		return val;
+	}
+
+	function getSortResult(a, b) {
+		a = getSortableVal(a);
+		b = getSortableVal(b);
+		if (a < b) {
+			return -1;
+		} else if (a > b) {
+			return 1;
+		} else {
+			return 0;
+		}
+	}
+
+	function copyToClipboard(text) {
+		var inp =document.createElement("input");
+		document.body.appendChild(inp);
+		inp.value = text;
+		inp.select();
+		document.execCommand("copy");
+		inp.remove();
+	}
+
+	function escapeRegExp(str) {
+		return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+	}
+
+	function appendTd(tr, text, cssclass="") {
+		if (highlight != null && text != null && !isNumeric(text)) {
+			var highlights = highlight.split(",");
+			for (var i = 0; i < highlights.length; i++) {
+				if (text.toLowerCase().includes(highlights[i].toLowerCase().trim())) {
+					text = text.replace(new RegExp(escapeRegExp(highlights[i].trim()), "i"),
+						"<span class=\"highlight\">$&</span>");
+				}
+			}
+		}
+		td = document.createElement("td");
+		td.innerHTML = text;
+		td.className = cssclass;
+		tr.appendChild(td);
+	}
+
+	function processJson(sortby = "players_current") {
+		var rawFile = new XMLHttpRequest();
+		rawFile.overrideMimeType("application/json");
+		rawFile.open("GET", jsonFile, true);
+		rawFile.onreadystatechange = function() {
+			if (rawFile.readyState === 4 && rawFile.status == "200") {
+				fillTable(getSortedJsonData(rawFile.responseText, sortby));
+			}
+		}
+		rawFile.send(null);
+	}
+
+	function getSortedJsonData (rawJson, sortby) {
+		var data = JSON.parse(rawJson);
+		data.sort(function(a, b) {
+			sort1 = getSortResult(a[sortby], b[sortby]);
+			sort2 = getSortResult(a.game_version, b.game_version);
+			sort3 = getSortResult(a.name, b.name);
+			if (sort1 != 0) {
+				return sort1 * document.getElementById("sortdir").value;
+			} else if (sort2 != 0) {
+				return sort2;
+			} else if (sort3 != 0) {
+				return sort3;
+			}
+			return 0;
+		});
+		return data;
+	}
+
+	function fillTable(data) {
+		var servercount = 0;
+		var playercount = 0;
+		var colorclass = "";
+		tbody = document.getElementById("servers");
+		tbody.innerHTML = "";
+		for (i in data) {
+			servercount++;
+			playercount+= data[i]["players_current"];
+			var aoslink = data[i]["identifier"] + ":" + data[i]["game_version"];
+			var tr = document.createElement("tr");
+			tr.id = aoslink;
+			tr.title= aoslink;
+			if (useClipboard) {
+				tr.onclick = function() {
+						copyToClipboard(this.id);
+					};
+			} else {
+				tr.onclick = function() {
+						window.location = this.id;
+					};
+			}
+			if (data[i]["players_current"] > 0) {
+				colorclass = "busy";
+			} else {
+				colorclass = "empty";
+			}
+			appendTd(tr, data[i]["players_current"] + "/" + data[i]["players_max"], colorclass);
+			appendTd(tr, data[i]["name"], colorclass);
+			appendTd(tr, data[i]["game_mode"], colorclass);
+			appendTd(tr, data[i]["map"], colorclass);
+			appendTd(tr, data[i]["country"], colorclass);
+			appendTd(tr, data[i]["game_version"], colorclass);
+			appendTd(tr, data[i]["latency"], colorclass);
+			tbody.appendChild(tr);
+		}
+		document.getElementById("summary").innerHTML = playercount + " players, "
+			+ servercount + " servers";
+	}
+
+	function init() {
+		document.getElementById("sortbylast").value = "";
+		document.getElementById("sortdir").value = "-1";
+		if (showLocalhost) {
+			document.getElementById("local").className = "";
+			document.getElementById("optlocal").checked = true;
+		}
+		if (showRefreshButton) {
+			document.getElementById("refresh").className = "";
+			document.getElementById("optref").checked = true;
+		}
+		document.getElementById("opthl").value = highlight;
+		document.getElementById("opttheme").selectedIndex = +useLightTheme;
+		document.getElementById("optlink").selectedIndex = +useClipboard;
+		processJson();
+		if (useLightTheme) {
+			elements = document.querySelectorAll("body, table, th, td, caption, a, .busy, .empty");
+			for(var i = 0, length = elements.length; i < length; i++) {
+				elements[i].classList.add("light");
+			}
+		}
+	}
+
+	function changeSort(sortby) {
+		sortbyelem = document.getElementById("sortbylast");
+		sortelem = document.getElementById("sortdir");
+		if (sortbyelem.value == sortby) {
+			sortelem.value = sortelem.value * -1;
+		} else {
+			sortelem.value = 1;
+		}
+		sortbyelem.value = sortby;
+		processJson(sortby);
+	}
+
+	function updateList() {
+		sortby = document.getElementById("sortbylast").value;
+		if (sortby != null && sortby != "") {
+			processJson(sortby);
+		} else {
+			processJson();
+		}
+	}
+
+	function showOptions() {
+		optelem = document.getElementById("options");
+		if (optelem.className == "hide") {
+			optelem.className = "options";
+		} else {
+			optelem.className = "hide";
+		}
+	}
+
+	function applyOptions() {
+		document.getElementById("options").className = "hide";
+		var params = [];
+
+		if (document.getElementById("optlocal").checked) {
+			params.push("local");
+		}
+		if (document.getElementById("optref").checked) {
+			params.push("refresh");
+		}
+		if (document.getElementById("opthl").value != null
+			&& document.getElementById("opthl").value.trim() != "") {
+			params.push("highlight=" + document.getElementById("opthl").value);
+		}
+		if (document.getElementById("opttheme").selectedIndex == 1) {
+			params.push("light");
+		}
+		if (document.getElementById("optlink").selectedIndex == 1) {
+			params.push("clipboard");
+		}
+		urlparams = "";
+		for (var i = 0; i < params.length; i++) {
+			if (i > 0) {
+				urlparams += "&"
+			}
+			urlparams += params[i];
+		}
+		if (urlparams != "") {
+			urlparams = "?" + urlparams;
+		}
+		window.location.href = window.location.pathname + urlparams;
+	}
+
+	function connectLocal() {
+		if (useClipboard) {
+			copyToClipboard(document.getElementById("local").href);
+			return false;
+		} else {
+			return true;
+		}
+	}
+	</script>
+</head>
+<body style="padding: 1em;" onload="init();">
+		<input id="sortbylast" class="hide" />
+		<input id="sortdir" class="hide" />
+		<table>
+		<caption>
+			<button type="button" id="refresh" class="hide"
+				onclick="updateList();">Refresh</button>
+			<span id="summary">0 players, 0 servers</span>
+			<span id="links">
+				<a href="aos://16777343" id="local" class="hide" onclick="return connectLocal();">localhost</a>
+				<a href="" class="link" onclick="showOptions(); return false;">options</a>
+			</span>
+			<span id="options" class="hide">
+				<select id="opttheme" title="Choose color theme">
+					<option>Dark Theme</option>
+					<option>Light Theme</option>
+				</select>
+				<select id="optlink" title="Open server links or copy them to clipboard">
+					<option>Open Link</option>
+					<option>Copy Link</option>
+				</select>
+				<label for="opthl" title="Highlight your keywords">Highlight:</label>
+					<input type="text" id="opthl" style="width: 11em;" title="Separate with commas"
+						placeholder="keyword1, keyword2" />
+				<input type="checkbox" id="optlocal" /><label for="optlocal"
+					title="Show link for localhost connect">Localhost</label>
+				<input type="checkbox" id="optref" /><label for="optref"
+					title="Show refresh button">Refresh Button</label>
+				<br />Click on apply and then bookmark the site to always load it with your options.
+				<button type="button" onclick="applyOptions(); return false;">Apply</button>
+			</span>
+		</caption>
+		<thead>
+			<tr>
+			<th onclick="changeSort('players_current');">Slots</th>
+			<th onclick="changeSort('name');">Name</th>
+			<th onclick="changeSort('game_mode');">Mode</th>
+			<th onclick="changeSort('map');">Map</th>
+			<th onclick="changeSort('country');">Country</th>
+			<th onclick="changeSort('game_version');">Version</th>
+			<th onclick="changeSort('latency');">Ping</th>
+			</tr>
+		</thead>
+		<tbody id="servers">
+		</tbody>
+		</table>
+</body>
+</html>
