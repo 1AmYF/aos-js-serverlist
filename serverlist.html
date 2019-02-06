@@ -328,49 +328,49 @@ https://github.com/1AmYF/aos-js-serverlist
 	</script>
 </head>
 <body style="padding: 1em;" onload="init();">
-		<input id="sortbylast" class="hide" />
-		<input id="sortdir" class="hide" />
-		<table>
-		<caption>
-			<button type="button" id="refresh" class="hide" onclick="updateList();">Refresh</button>
-			<span id="summary">0 players, 0 servers</span>
-			<span id="links">
-				<a href="aos://16777343" id="local" class="hide" onclick="return connectLocal();">localhost</a>
-				<a href="" class="link" onclick="showOptions(); return false;">options</a>
-			</span>
-			<span id="options" class="hide">
-				<select id="opttheme" title="Choose color theme">
-					<option>Dark Theme</option>
-					<option>Light Theme</option>
-				</select>
-				<select id="optlink" title="Open server links or copy them to clipboard">
-					<option>Open Link</option>
-					<option>Copy Link</option>
-				</select>
-				<label for="opthl" title="Highlight your keywords">Highlight:</label>
-					<input type="text" id="opthl" style="width: 11em;" title="Separate with commas"
-						placeholder="keyword1, keyword2" />
-				<input type="checkbox" id="optlocal" /><label for="optlocal"
-					title="Show link for localhost connect">Localhost</label>
-				<input type="checkbox" id="optref" /><label for="optref"
-					title="Show refresh button">Refresh Button</label>
-				<br />Click on apply and then bookmark the site to always load it with your options.
-				<button type="button" onclick="applyOptions();">Apply</button>
-			</span>
-		</caption>
-		<thead>
-			<tr>
-			<th onclick="changeSort('players_current');">Slots</th>
-			<th onclick="changeSort('name');">Name</th>
-			<th onclick="changeSort('game_mode');">Mode</th>
-			<th onclick="changeSort('map');">Map</th>
-			<th onclick="changeSort('country');">Country</th>
-			<th onclick="changeSort('game_version');">Version</th>
-			<th onclick="changeSort('latency');">Ping</th>
-			</tr>
-		</thead>
-		<tbody id="servers">
-		</tbody>
-		</table>
+	<input id="sortbylast" class="hide" />
+	<input id="sortdir" class="hide" />
+	<table>
+	<caption>
+		<button type="button" id="refresh" class="hide" onclick="updateList();">Refresh</button>
+		<span id="summary">0 players, 0 servers</span>
+		<span id="links">
+			<a href="aos://16777343" id="local" class="hide" onclick="return connectLocal();">localhost</a>
+			<a href="" class="link" onclick="showOptions(); return false;">options</a>
+		</span>
+		<span id="options" class="hide">
+			<select id="opttheme" title="Choose color theme">
+				<option>Dark Theme</option>
+				<option>Light Theme</option>
+			</select>
+			<select id="optlink" title="Open server links or copy them to clipboard">
+				<option>Open Link</option>
+				<option>Copy Link</option>
+			</select>
+			<label for="opthl" title="Highlight your keywords">Highlight:</label>
+				<input type="text" id="opthl" style="width: 11em;" title="Separate with commas"
+					placeholder="keyword1, keyword2" />
+			<input type="checkbox" id="optlocal" /><label for="optlocal"
+				title="Show link for localhost connect">Localhost</label>
+			<input type="checkbox" id="optref" /><label for="optref"
+				title="Show refresh button">Refresh Button</label>
+			<br />Click on apply and then bookmark the site to always load it with your options.
+			<button type="button" onclick="applyOptions();">Apply</button>
+		</span>
+	</caption>
+	<thead>
+		<tr>
+		<th onclick="changeSort('players_current');">Slots</th>
+		<th onclick="changeSort('name');">Name</th>
+		<th onclick="changeSort('game_mode');">Mode</th>
+		<th onclick="changeSort('map');">Map</th>
+		<th onclick="changeSort('country');">Country</th>
+		<th onclick="changeSort('game_version');">Version</th>
+		<th onclick="changeSort('latency');">Ping</th>
+		</tr>
+	</thead>
+	<tbody id="servers">
+	</tbody>
+	</table>
 </body>
 </html>
