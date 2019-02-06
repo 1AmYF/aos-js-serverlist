@@ -314,10 +314,7 @@ https://github.com/1AmYF/aos-js-serverlist
 			}
 			urlparams += params[i];
 		}
-		if (urlparams != "") {
-			urlparams = "?" + urlparams;
-		}
-		window.location.href = window.location.pathname + urlparams;
+		window.location.search = urlparams;
 	}
 
 	function connectLocal() {
@@ -335,8 +332,7 @@ https://github.com/1AmYF/aos-js-serverlist
 		<input id="sortdir" class="hide" />
 		<table>
 		<caption>
-			<button type="button" id="refresh" class="hide"
-				onclick="updateList();">Refresh</button>
+			<button type="button" id="refresh" class="hide" onclick="updateList();">Refresh</button>
 			<span id="summary">0 players, 0 servers</span>
 			<span id="links">
 				<a href="aos://16777343" id="local" class="hide" onclick="return connectLocal();">localhost</a>
@@ -359,7 +355,7 @@ https://github.com/1AmYF/aos-js-serverlist
 				<input type="checkbox" id="optref" /><label for="optref"
 					title="Show refresh button">Refresh Button</label>
 				<br />Click on apply and then bookmark the site to always load it with your options.
-				<button type="button" onclick="applyOptions(); return false;">Apply</button>
+				<button type="button" onclick="applyOptions();">Apply</button>
 			</span>
 		</caption>
 		<thead>
