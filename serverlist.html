@@ -121,7 +121,7 @@ https://github.com/1AmYF/aos-js-serverlist
 		if (val == null) {
 			val = "";
 		} else if (!isNumeric(val)) {
-			val = val.toLowerCase();
+			val = val.toLowerCase().trim();
 		}
 		return val;
 	}
@@ -139,7 +139,7 @@ https://github.com/1AmYF/aos-js-serverlist
 	}
 
 	function copyToClipboard(text) {
-		var inp =document.createElement("input");
+		var inp = document.createElement("input");
 		document.body.appendChild(inp);
 		inp.value = text;
 		inp.select();
@@ -161,7 +161,7 @@ https://github.com/1AmYF/aos-js-serverlist
 				}
 			}
 		}
-		td = document.createElement("td");
+		var td = document.createElement("td");
 		td.innerHTML = text;
 		td.className = cssclass;
 		tr.appendChild(td);
@@ -201,23 +201,23 @@ https://github.com/1AmYF/aos-js-serverlist
 		var servercount = 0;
 		var playercount = 0;
 		var colorclass = "";
-		tbody = document.getElementById("servers");
+		var tbody = document.getElementById("servers");
 		tbody.innerHTML = "";
-		for (i in data) {
+		for (var i in data) {
 			servercount++;
-			playercount+= data[i]["players_current"];
+			playercount += data[i]["players_current"];
 			var aoslink = data[i]["identifier"] + ":" + data[i]["game_version"];
 			var tr = document.createElement("tr");
 			tr.id = aoslink;
-			tr.title= aoslink;
+			tr.title = aoslink;
 			if (options.useClipboard) {
 				tr.onclick = function() {
-						copyToClipboard(this.id);
-					};
+					copyToClipboard(this.id);
+				}
 			} else {
 				tr.onclick = function() {
-						window.location = this.id;
-					};
+					window.location = this.id;
+				}
 			}
 			if (data[i]["players_current"] > 0) {
 				colorclass = "busy";
@@ -263,16 +263,16 @@ https://github.com/1AmYF/aos-js-serverlist
 		document.getElementById("optlink").selectedIndex = +options.useClipboard;
 		processJson();
 		if (options.useLightTheme) {
-			elements = document.querySelectorAll("body, table, th, td, caption, a, .busy, .empty");
-			for(var i = 0, length = elements.length; i < length; i++) {
+			var elements = document.querySelectorAll("body, table, th, td, caption, a, .busy, .empty");
+			for (var i = 0; i < elements.length; i++) {
 				elements[i].classList.add("light");
 			}
 		}
 	}
 
 	function changeSort(sortby) {
-		sortbyelem = document.getElementById("sortbylast");
-		sortelem = document.getElementById("sortdir");
+		var sortbyelem = document.getElementById("sortbylast");
+		var sortelem = document.getElementById("sortdir");
 		if (sortbyelem.value == sortby) {
 			sortelem.value = sortelem.value * -1;
 		} else {
@@ -283,7 +283,7 @@ https://github.com/1AmYF/aos-js-serverlist
 	}
 
 	function updateList() {
-		sortby = document.getElementById("sortbylast").value;
+		var sortby = document.getElementById("sortbylast").value;
 		if (sortby != null && sortby != "") {
 			processJson(sortby);
 		} else {
@@ -292,7 +292,7 @@ https://github.com/1AmYF/aos-js-serverlist
 	}
 
 	function showOptions() {
-		optelem = document.getElementById("options");
+		var optelem = document.getElementById("options");
 		if (optelem.className == "hide") {
 			optelem.className = "options";
 		} else {
@@ -319,10 +319,10 @@ https://github.com/1AmYF/aos-js-serverlist
 		if (document.getElementById("optlink").selectedIndex == 1) {
 			params.push("clipboard");
 		}
-		urlparams = "";
+		var urlparams = "";
 		for (var i = 0; i < params.length; i++) {
 			if (i > 0) {
-				urlparams += "&"
+				urlparams += "&";
 			}
 			urlparams += params[i];
 		}
