@@ -24,7 +24,7 @@ https://github.com/1AmYF/aos-js-serverlist
 		margin-right: 0.2em;
 	}
 	table {
-		min-width: 45em;
+		min-width: 50em;
 	}
 	a {
 		color: #D3D3D3;
@@ -111,12 +111,7 @@ https://github.com/1AmYF/aos-js-serverlist
 
 	var countries = {"BD":"Bangladesh","BE":"Belgium","BF":"Burkina Faso","BG":"Bulgaria","BA":"Bosnia and Herzegovina","BB":"Barbados","WF":"Wallis and Futuna","BL":"Saint Barthelemy","BM":"Bermuda","BN":"Brunei","BO":"Bolivia","BH":"Bahrain","BI":"Burundi","BJ":"Benin","BT":"Bhutan","JM":"Jamaica","BV":"Bouvet Island","BW":"Botswana","WS":"Samoa","BQ":"Bonaire, Saint Eustatius and Saba","BR":"Brazil","BS":"Bahamas","JE":"Jersey","BY":"Belarus","BZ":"Belize","RU":"Russia","RW":"Rwanda","RS":"Serbia","TL":"East Timor","RE":"Reunion","TM":"Turkmenistan","TJ":"Tajikistan","RO":"Romania","TK":"Tokelau","GW":"Guinea-Bissau","GU":"Guam","GT":"Guatemala","GS":"South Georgia and the South Sandwich Islands","GR":"Greece","GQ":"Equatorial Guinea","GP":"Guadeloupe","JP":"Japan","GY":"Guyana","GG":"Guernsey","GF":"French Guiana","GE":"Georgia","GD":"Grenada","GB":"United Kingdom","GA":"Gabon","SV":"El Salvador","GN":"Guinea","GM":"Gambia","GL":"Greenland","GI":"Gibraltar","GH":"Ghana","OM":"Oman","TN":"Tunisia","JO":"Jordan","HR":"Croatia","HT":"Haiti","HU":"Hungary","HK":"Hong Kong","HN":"Honduras","HM":"Heard Island and McDonald Islands","VE":"Venezuela","PR":"Puerto Rico","PS":"Palestinian Territory","PW":"Palau","PT":"Portugal","SJ":"Svalbard and Jan Mayen","PY":"Paraguay","IQ":"Iraq","PA":"Panama","PF":"French Polynesia","PG":"Papua New Guinea","PE":"Peru","PK":"Pakistan","PH":"Philippines","PN":"Pitcairn","PL":"Poland","PM":"Saint Pierre and Miquelon","ZM":"Zambia","EH":"Western Sahara","EE":"Estonia","EG":"Egypt","ZA":"South Africa","EC":"Ecuador","IT":"Italy","VN":"Vietnam","SB":"Solomon Islands","ET":"Ethiopia","SO":"Somalia","ZW":"Zimbabwe","SA":"Saudi Arabia","ES":"Spain","ER":"Eritrea","ME":"Montenegro","MD":"Moldova","MG":"Madagascar","MF":"Saint Martin","MA":"Morocco","MC":"Monaco","UZ":"Uzbekistan","MM":"Myanmar","ML":"Mali","MO":"Macao","MN":"Mongolia","MH":"Marshall Islands","MK":"Macedonia","MU":"Mauritius","MT":"Malta","MW":"Malawi","MV":"Maldives","MQ":"Martinique","MP":"Northern Mariana Islands","MS":"Montserrat","MR":"Mauritania","IM":"Isle of Man","UG":"Uganda","TZ":"Tanzania","MY":"Malaysia","MX":"Mexico","IL":"Israel","FR":"France","IO":"British Indian Ocean Territory","SH":"Saint Helena","FI":"Finland","FJ":"Fiji","FK":"Falkland Islands","FM":"Micronesia","FO":"Faroe Islands","NI":"Nicaragua","NL":"Netherlands","NO":"Norway","NA":"Namibia","VU":"Vanuatu","NC":"New Caledonia","NE":"Niger","NF":"Norfolk Island","NG":"Nigeria","NZ":"New Zealand","NP":"Nepal","NR":"Nauru","NU":"Niue","CK":"Cook Islands","XK":"Kosovo","CI":"Ivory Coast","CH":"Switzerland","CO":"Colombia","CN":"China","CM":"Cameroon","CL":"Chile","CC":"Cocos Islands","CA":"Canada","CG":"Republic of the Congo","CF":"Central African Republic","CD":"Democratic Republic of the Congo","CZ":"Czech Republic","CY":"Cyprus","CX":"Christmas Island","CR":"Costa Rica","CW":"Curacao","CV":"Cape Verde","CU":"Cuba","SZ":"Swaziland","SY":"Syria","SX":"Sint Maarten","KG":"Kyrgyzstan","KE":"Kenya","SS":"South Sudan","SR":"Suriname","KI":"Kiribati","KH":"Cambodia","KN":"Saint Kitts and Nevis","KM":"Comoros","ST":"Sao Tome and Principe","SK":"Slovakia","KR":"South Korea","SI":"Slovenia","KP":"North Korea","KW":"Kuwait","SN":"Senegal","SM":"San Marino","SL":"Sierra Leone","SC":"Seychelles","KZ":"Kazakhstan","KY":"Cayman Islands","SG":"Singapore","SE":"Sweden","SD":"Sudan","DO":"Dominican Republic","DM":"Dominica","DJ":"Djibouti","DK":"Denmark","VG":"British Virgin Islands","DE":"Germany","YE":"Yemen","DZ":"Algeria","US":"United States","UY":"Uruguay","YT":"Mayotte","UM":"United States Minor Outlying Islands","LB":"Lebanon","LC":"Saint Lucia","LA":"Laos","TV":"Tuvalu","TW":"Taiwan","TT":"Trinidad and Tobago","TR":"Turkey","LK":"Sri Lanka","LI":"Liechtenstein","LV":"Latvia","TO":"Tonga","LT":"Lithuania","LU":"Luxembourg","LR":"Liberia","LS":"Lesotho","TH":"Thailand","TF":"French Southern Territories","TG":"Togo","TD":"Chad","TC":"Turks and Caicos Islands","LY":"Libya","VA":"Vatican","VC":"Saint Vincent and the Grenadines","AE":"United Arab Emirates","AD":"Andorra","AG":"Antigua and Barbuda","AF":"Afghanistan","AI":"Anguilla","VI":"U.S. Virgin Islands","IS":"Iceland","IR":"Iran","AM":"Armenia","AL":"Albania","AO":"Angola","AQ":"Antarctica","AS":"American Samoa","AR":"Argentina","AU":"Australia","AT":"Austria","AW":"Aruba","IN":"India","AX":"Aland Islands","AZ":"Azerbaijan","IE":"Ireland","ID":"Indonesia","UA":"Ukraine","QA":"Qatar","MZ":"Mozambique"};
 
-	var url = new URL(window.location.href);
-	var useLightTheme = url.searchParams.has("light");
-	var highlight = url.searchParams.get("highlight");
-	var useClipboard = url.searchParams.has("clipboard");
-	var showLocalhost = url.searchParams.has("local");
-	var showRefreshButton = url.searchParams.has("refresh");
+	var options = {};
 
 	function isNumeric(n) {
 		return !isNaN(parseFloat(n)) && isFinite(n);
@@ -157,8 +152,8 @@ https://github.com/1AmYF/aos-js-serverlist
 	}
 
 	function appendTd(tr, text, cssclass = "") {
-		if (highlight != null && text != null && !isNumeric(text)) {
-			var highlights = highlight.split(",");
+		if (options.highlight != null && text != null && !isNumeric(text)) {
+			var highlights = options.highlight.split(",");
 			for (var i = 0; i < highlights.length; i++) {
 				if (text.toLowerCase().includes(highlights[i].toLowerCase().trim())) {
 					text = text.replace(new RegExp(escapeRegExp(highlights[i].trim()), "i"),
@@ -215,7 +210,7 @@ https://github.com/1AmYF/aos-js-serverlist
 			var tr = document.createElement("tr");
 			tr.id = aoslink;
 			tr.title= aoslink;
-			if (useClipboard) {
+			if (options.useClipboard) {
 				tr.onclick = function() {
 						copyToClipboard(this.id);
 					};
@@ -229,9 +224,9 @@ https://github.com/1AmYF/aos-js-serverlist
 			} else {
 				colorclass = "empty";
 			}
-			var country = countries[data[i]["country"]];
-			if (country == null) {
-				country = data[i]["country"];
+			var country = data[i]["country"];
+			if (country != null && country.toUpperCase() in countries) {
+				country = countries[country.toUpperCase()];
 			}
 			appendTd(tr, data[i]["players_current"] + "/" + data[i]["players_max"], colorclass);
 			appendTd(tr, data[i]["name"], colorclass);
@@ -247,21 +242,27 @@ https://github.com/1AmYF/aos-js-serverlist
 	}
 
 	function init() {
+		var url = new URL(window.location.href);
+		options.useLightTheme = url.searchParams.has("light");
+		options.highlight = url.searchParams.get("highlight");
+		options.useClipboard = url.searchParams.has("clipboard");
+		options.showLocalhost = url.searchParams.has("local");
+		options.showRefreshButton = url.searchParams.has("refresh");
 		document.getElementById("sortbylast").value = "";
 		document.getElementById("sortdir").value = "-1";
-		if (showLocalhost) {
+		if (options.showLocalhost) {
 			document.getElementById("local").className = "";
 			document.getElementById("optlocal").checked = true;
 		}
-		if (showRefreshButton) {
+		if (options.showRefreshButton) {
 			document.getElementById("refresh").className = "";
 			document.getElementById("optref").checked = true;
 		}
-		document.getElementById("opthl").value = highlight;
-		document.getElementById("opttheme").selectedIndex = +useLightTheme;
-		document.getElementById("optlink").selectedIndex = +useClipboard;
+		document.getElementById("opthl").value = options.highlight;
+		document.getElementById("opttheme").selectedIndex = +options.useLightTheme;
+		document.getElementById("optlink").selectedIndex = +options.useClipboard;
 		processJson();
-		if (useLightTheme) {
+		if (options.useLightTheme) {
 			elements = document.querySelectorAll("body, table, th, td, caption, a, .busy, .empty");
 			for(var i = 0, length = elements.length; i < length; i++) {
 				elements[i].classList.add("light");
@@ -302,7 +303,6 @@ https://github.com/1AmYF/aos-js-serverlist
 	function applyOptions() {
 		document.getElementById("options").className = "hide";
 		var params = [];
-
 		if (document.getElementById("optlocal").checked) {
 			params.push("local");
 		}
@@ -330,7 +330,7 @@ https://github.com/1AmYF/aos-js-serverlist
 	}
 
 	function connectLocal() {
-		if (useClipboard) {
+		if (options.useClipboard) {
 			copyToClipboard(document.getElementById("local").href);
 			return false;
 		} else {
@@ -347,8 +347,8 @@ https://github.com/1AmYF/aos-js-serverlist
 		<button type="button" id="refresh" class="hide" onclick="updateList();">Refresh</button>
 		<span id="summary">0 players, 0 servers</span>
 		<span id="links">
-			<a href="aos://16777343" id="local" class="hide" onclick="return connectLocal();">localhost</a>
-			<a href="" class="link" onclick="showOptions(); return false;">options</a>
+			<a href="aos://16777343" id="local" class="hide" onclick="return connectLocal();">Localhost</a>
+			<a href="" class="link" onclick="showOptions(); return false;">Options</a>
 		</span>
 		<span id="options" class="hide">
 			<select id="opttheme" title="Choose color theme">
