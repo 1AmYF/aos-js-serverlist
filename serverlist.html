@@ -138,6 +138,16 @@ https://github.com/1AmYF/aos-js-serverlist
 		}
 	}
 
+	function getCountry(code) {
+		if (code != null) {
+			var item = countries[code.toUpperCase()];
+			if (item != null) {
+				return item;
+			}
+		}
+		return code;
+	}
+
 	function copyToClipboard(text) {
 		var inp = document.createElement("input");
 		document.body.appendChild(inp);
@@ -161,6 +171,9 @@ https://github.com/1AmYF/aos-js-serverlist
 				}
 			}
 		}
+		if (text == null) {
+			text = "n/a";
+		}
 		var td = document.createElement("td");
 		td.innerHTML = text;
 		td.className = cssclass;
@@ -175,16 +188,21 @@ https://github.com/1AmYF/aos-js-serverlist
 			if (rawFile.readyState === 4 && rawFile.status == "200") {
 				fillTable(getSortedJsonData(rawFile.responseText, sortby));
 			}
-		}
+		};
 		rawFile.send(null);
 	}
 
 	function getSortedJsonData(rawJson, sortby) {
 		var data = JSON.parse(rawJson);
 		data.sort(function(a, b) {
-			sort1 = getSortResult(a[sortby], b[sortby]);
-			sort2 = getSortResult(a.game_version, b.game_version);
-			sort3 = getSortResult(a.name, b.name);
+			var sort1 = 0;
+			if (sortby == "country") {
+				sort1 = getSortResult(getCountry(a[sortby]), getCountry(b[sortby]));
+			} else {
+				sort1 = getSortResult(a[sortby], b[sortby]);
+			}
+			var sort2 = getSortResult(a["game_version"], b["game_version"]);
+			var sort3 = getSortResult(a["name"], b["name"]);
 			if (sort1 != 0) {
 				return sort1 * document.getElementById("sortdir").value;
 			} else if (sort2 != 0) {
@@ -213,32 +231,28 @@ https://github.com/1AmYF/aos-js-serverlist
 			if (options.useClipboard) {
 				tr.onclick = function() {
 					copyToClipboard(this.id);
-				}
+				};
 			} else {
 				tr.onclick = function() {
 					window.location = this.id;
-				}
+				};
 			}
 			if (data[i]["players_current"] > 0) {
 				colorclass = "busy";
 			} else {
 				colorclass = "empty";
 			}
-			var country = data[i]["country"];
-			if (country != null && country.toUpperCase() in countries) {
-				country = countries[country.toUpperCase()];
-			}
 			appendTd(tr, data[i]["players_current"] + "/" + data[i]["players_max"], colorclass);
 			appendTd(tr, data[i]["name"], colorclass);
 			appendTd(tr, data[i]["game_mode"], colorclass);
 			appendTd(tr, data[i]["map"], colorclass);
-			appendTd(tr, country, colorclass + " country");
+			appendTd(tr, getCountry(data[i]["country"]), colorclass + " country");
 			appendTd(tr, data[i]["game_version"], colorclass);
 			appendTd(tr, data[i]["latency"], colorclass);
 			tbody.appendChild(tr);
 		}
-		document.getElementById("summary").innerHTML = playercount + " players, "
-			+ servercount + " servers";
+		document.getElementById("summary").innerHTML = playercount + " players, " +
+			servercount + " servers";
 	}
 
 	function init() {
@@ -309,8 +323,8 @@ https://github.com/1AmYF/aos-js-serverlist
 		if (document.getElementById("optref").checked) {
 			params.push("refresh");
 		}
-		if (document.getElementById("opthl").value != null
-			&& document.getElementById("opthl").value.trim() != "") {
+		if (document.getElementById("opthl").value != null &&
+			document.getElementById("opthl").value.trim() != "") {
 			params.push("highlight=" + document.getElementById("opthl").value);
 		}
 		if (document.getElementById("opttheme").selectedIndex == 1) {
