@@ -224,7 +224,10 @@ https://github.com/1AmYF/aos-js-serverlist
 		for (var i in data) {
 			servercount++;
 			playercount += data[i]["players_current"];
-			var aoslink = data[i]["identifier"] + ":" + data[i]["game_version"];
+			var aoslink = data[i]["identifier"];
+			if (data[i]["game_version"] != null) {
+				aoslink += ":" + data[i]["game_version"];
+			}
 			var tr = document.createElement("tr");
 			tr.id = aoslink;
 			tr.title = aoslink;
