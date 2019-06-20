@@ -1,5 +1,5 @@
 # aos-js-serverlist
-A single-file serverlist in pure Javascript for the game *Ace of Spades Classic*.
+A single-file serverlist in pure Javascript for the game *Ace of Spades Classic*. [Live Version](https://1amyf.github.io/aos-js-serverlist/serverlist.html)
 
 ## Features
 - Simple and clean layout
@@ -11,5 +11,3 @@ A single-file serverlist in pure Javascript for the game *Ace of Spades Classic*
 	- Highlight your keywords (like your favorite servernames, gamemodes or maps)
 	- Click will open server links or always copy them to clipboard instead
 	- Optionally display a localhost link or a refresh button
-
-For a **demo** visit the version hosted at http://sauerkraut.bplaced.net/serverlist
