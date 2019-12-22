@@ -48,8 +48,14 @@ https://github.com/1AmYF/aos-js-serverlist
 	#options {
 		background-color: #D3D3D3;
 		color: #202020;
-		padding: 0.3em 0 0.3em 0.3em;
 		margin-top: 0.3em;
+	}
+	#options span {
+		display: block;
+		padding: 0.3em 0 0.3em 0.3em;
+	}
+	#submitoptions {
+		background-color: #BABABA;
 	}
 	.options {
 		clear: both;
@@ -110,8 +116,8 @@ https://github.com/1AmYF/aos-js-serverlist
 	<script>
 	// Location of the serverlist JSON file
 	var jsonFile = "https://services.buildandshoot.com/serverlist.json";
-	// Default additional sorting (set to false to disable)
-	var secondarySort = ["name", "game_version"];
+	// Default secondary sorting (Example: "name,game_version", or false for no default)
+	var secondarySortDefault = false;
 
 	var countries = {"BD":"Bangladesh","BE":"Belgium","BF":"Burkina Faso","BG":"Bulgaria","BA":"Bosnia and Herzegovina","BB":"Barbados","WF":"Wallis and Futuna","BL":"Saint Barthelemy","BM":"Bermuda","BN":"Brunei","BO":"Bolivia","BH":"Bahrain","BI":"Burundi","BJ":"Benin","BT":"Bhutan","JM":"Jamaica","BV":"Bouvet Island","BW":"Botswana","WS":"Samoa","BQ":"Bonaire, Saint Eustatius and Saba","BR":"Brazil","BS":"Bahamas","JE":"Jersey","BY":"Belarus","BZ":"Belize","RU":"Russia","RW":"Rwanda","RS":"Serbia","TL":"East Timor","RE":"Reunion","TM":"Turkmenistan","TJ":"Tajikistan","RO":"Romania","TK":"Tokelau","GW":"Guinea-Bissau","GU":"Guam","GT":"Guatemala","GS":"South Georgia and the South Sandwich Islands","GR":"Greece","GQ":"Equatorial Guinea","GP":"Guadeloupe","JP":"Japan","GY":"Guyana","GG":"Guernsey","GF":"French Guiana","GE":"Georgia","GD":"Grenada","GB":"United Kingdom","GA":"Gabon","SV":"El Salvador","GN":"Guinea","GM":"Gambia","GL":"Greenland","GI":"Gibraltar","GH":"Ghana","OM":"Oman","TN":"Tunisia","JO":"Jordan","HR":"Croatia","HT":"Haiti","HU":"Hungary","HK":"Hong Kong","HN":"Honduras","HM":"Heard Island and McDonald Islands","VE":"Venezuela","PR":"Puerto Rico","PS":"Palestinian Territory","PW":"Palau","PT":"Portugal","SJ":"Svalbard and Jan Mayen","PY":"Paraguay","IQ":"Iraq","PA":"Panama","PF":"French Polynesia","PG":"Papua New Guinea","PE":"Peru","PK":"Pakistan","PH":"Philippines","PN":"Pitcairn","PL":"Poland","PM":"Saint Pierre and Miquelon","ZM":"Zambia","EH":"Western Sahara","EE":"Estonia","EG":"Egypt","ZA":"South Africa","EC":"Ecuador","IT":"Italy","VN":"Vietnam","SB":"Solomon Islands","ET":"Ethiopia","SO":"Somalia","ZW":"Zimbabwe","SA":"Saudi Arabia","ES":"Spain","ER":"Eritrea","ME":"Montenegro","MD":"Moldova","MG":"Madagascar","MF":"Saint Martin","MA":"Morocco","MC":"Monaco","UZ":"Uzbekistan","MM":"Myanmar","ML":"Mali","MO":"Macao","MN":"Mongolia","MH":"Marshall Islands","MK":"Macedonia","MU":"Mauritius","MT":"Malta","MW":"Malawi","MV":"Maldives","MQ":"Martinique","MP":"Northern Mariana Islands","MS":"Montserrat","MR":"Mauritania","IM":"Isle of Man","UG":"Uganda","TZ":"Tanzania","MY":"Malaysia","MX":"Mexico","IL":"Israel","FR":"France","IO":"British Indian Ocean Territory","SH":"Saint Helena","FI":"Finland","FJ":"Fiji","FK":"Falkland Islands","FM":"Micronesia","FO":"Faroe Islands","NI":"Nicaragua","NL":"Netherlands","NO":"Norway","NA":"Namibia","VU":"Vanuatu","NC":"New Caledonia","NE":"Niger","NF":"Norfolk Island","NG":"Nigeria","NZ":"New Zealand","NP":"Nepal","NR":"Nauru","NU":"Niue","CK":"Cook Islands","XK":"Kosovo","CI":"Ivory Coast","CH":"Switzerland","CO":"Colombia","CN":"China","CM":"Cameroon","CL":"Chile","CC":"Cocos Islands","CA":"Canada","CG":"Republic of the Congo","CF":"Central African Republic","CD":"Democratic Republic of the Congo","CZ":"Czech Republic","CY":"Cyprus","CX":"Christmas Island","CR":"Costa Rica","CW":"Curacao","CV":"Cape Verde","CU":"Cuba","SZ":"Swaziland","SY":"Syria","SX":"Sint Maarten","KG":"Kyrgyzstan","KE":"Kenya","SS":"South Sudan","SR":"Suriname","KI":"Kiribati","KH":"Cambodia","KN":"Saint Kitts and Nevis","KM":"Comoros","ST":"Sao Tome and Principe","SK":"Slovakia","KR":"South Korea","SI":"Slovenia","KP":"North Korea","KW":"Kuwait","SN":"Senegal","SM":"San Marino","SL":"Sierra Leone","SC":"Seychelles","KZ":"Kazakhstan","KY":"Cayman Islands","SG":"Singapore","SE":"Sweden","SD":"Sudan","DO":"Dominican Republic","DM":"Dominica","DJ":"Djibouti","DK":"Denmark","VG":"British Virgin Islands","DE":"Germany","YE":"Yemen","DZ":"Algeria","US":"United States","UY":"Uruguay","YT":"Mayotte","UM":"United States Minor Outlying Islands","LB":"Lebanon","LC":"Saint Lucia","LA":"Laos","TV":"Tuvalu","TW":"Taiwan","TT":"Trinidad and Tobago","TR":"Turkey","LK":"Sri Lanka","LI":"Liechtenstein","LV":"Latvia","TO":"Tonga","LT":"Lithuania","LU":"Luxembourg","LR":"Liberia","LS":"Lesotho","TH":"Thailand","TF":"French Southern Territories","TG":"Togo","TD":"Chad","TC":"Turks and Caicos Islands","LY":"Libya","VA":"Vatican","VC":"Saint Vincent and the Grenadines","AE":"United Arab Emirates","AD":"Andorra","AG":"Antigua and Barbuda","AF":"Afghanistan","AI":"Anguilla","VI":"U.S. Virgin Islands","IS":"Iceland","IR":"Iran","AM":"Armenia","AL":"Albania","AO":"Angola","AQ":"Antarctica","AS":"American Samoa","AR":"Argentina","AU":"Australia","AT":"Austria","AW":"Aruba","IN":"India","AX":"Aland Islands","AZ":"Azerbaijan","IE":"Ireland","ID":"Indonesia","UA":"Ukraine","QA":"Qatar","MZ":"Mozambique"};
 
@@ -208,9 +214,9 @@ https://github.com/1AmYF/aos-js-serverlist
 			if (sort1 != 0) {
 				return sort1 * document.getElementById("sortdir").value;
 			}
-			if (secondarySort) {
-				for (var i = secondarySort.length - 1; i >= 0; i--) {
-					var sort2 = getSortResult(a[secondarySort[i]], b[secondarySort[i]]);
+			if (options.secsort) {
+				for (var i = options.secsort.length - 1; i >= 0; i--) {
+					var sort2 = getSortResult(a[options.secsort[i]], b[options.secsort[i]]);
 					if (sort2 != 0) {
 						return sort2;
 					}
@@ -286,12 +292,16 @@ https://github.com/1AmYF/aos-js-serverlist
 		document.getElementById("opthl").value = options.highlight;
 		document.getElementById("opttheme").selectedIndex = +options.light;
 		document.getElementById("optlink").selectedIndex = +options.clipboard;
-		if (options.secsort != null) {
-			if (options.secsort.toLowerCase().trim() == "false") {
-				secondarySort = false;
-			} else {
-				secondarySort = options.secsort.split(",");
-			}
+		if (options.secsort == null) {
+			options.secsort = secondarySortDefault;
+		}
+		else if (options.secsort.toLowerCase().trim() == "false") {
+			options.secsort = false;
+		}
+		if (options.secsort) {
+			options.secsort = options.secsort.split(",");
+			document.getElementById("optsecsort1").value = options.secsort[0];
+			document.getElementById("optsecsort2").value = options.secsort[1];
 		}
 		processJson();
 		if (options.light) {
@@ -351,8 +361,10 @@ https://github.com/1AmYF/aos-js-serverlist
 		if (document.getElementById("optlink").selectedIndex == 1) {
 			params.push("clipboard");
 		}
-		if (options.secsort != null) {
-			params.push("secsort=" + options.secsort);
+		var secsort1 = document.getElementById("optsecsort1").value;
+		var secsort2 = document.getElementById("optsecsort2").value;
+		if (secondarySortDefault || (secsort1 || secsort2)) {
+			params.push("secsort=" + secsort1 + "," + secsort2);
 		}
 		if (options.unicolor) {
 			params.push("unicolor");
@@ -389,23 +401,48 @@ https://github.com/1AmYF/aos-js-serverlist
 			<a href="" class="link" onclick="showOptions(); return false;">Options</a>
 		</span>
 		<span id="options" class="hide">
-			<select id="opttheme" title="Choose color theme">
-				<option>Dark Theme</option>
-				<option>Light Theme</option>
-			</select>
-			<select id="optlink" title="Open server links or copy them to clipboard">
-				<option>Open Link</option>
-				<option>Copy Link</option>
-			</select>
-			<label for="opthl" title="Highlight your keywords">Highlight:</label>
-				<input type="text" id="opthl" style="width: 11em;" title="Separate with commas"
-					placeholder="keyword1, keyword2" />
-			<input type="checkbox" id="optlocal" /><label for="optlocal"
-				title="Show link for localhost connect">Localhost</label>
-			<input type="checkbox" id="optref" /><label for="optref"
-				title="Show refresh button">Refresh Button</label>
-			<br />Click on apply and then bookmark the site to always load it with your options.
-			<button type="button" onclick="applyOptions();">Apply</button>
+			<span>
+				<select id="opttheme" title="Choose color theme">
+					<option>Dark Theme</option>
+					<option>Light Theme</option>
+				</select>
+				<select id="optlink" title="Open server links or copy them to clipboard">
+					<option>Open Link</option>
+					<option>Copy Link</option>
+				</select>
+				<label for="opthl" title="Highlight your keywords">Highlight:</label>
+					<input type="text" id="opthl" style="width: 11em;" title="Separate with commas"
+						placeholder="keyword1, keyword2" />
+				<input type="checkbox" id="optlocal" /><label for="optlocal"
+					title="Show link for localhost connect">Localhost</label>
+				<input type="checkbox" id="optref" /><label for="optref"
+					title="Show refresh button">Refresh Button</label>
+			</span>
+			<span>
+				<label for="optsecsort1">Secondary sort by</label>
+				<select id="optsecsort1">
+					<option value="">(None)</option>
+					<option value="name">Name</option>
+					<option value="game_mode">Mode</option>
+					<option value="map">Map</option>
+					<option value="country">Country</option>
+					<option value="game_version">Version</option>
+					<option value="latency">Ping</option>
+				</select> <label for="optsecsort2">and</label>
+				<select id="optsecsort2">
+					<option value="">(None)</option>
+					<option value="name">Name</option>
+					<option value="game_mode">Mode</option>
+					<option value="map">Map</option>
+					<option value="country">Country</option>
+					<option value="game_version">Version</option>
+					<option value="latency">Ping</option>
+				</select>
+			</span>
+			<span id="submitoptions">
+				Click on apply and then bookmark the site to always load it with your options.
+				<button type="button" onclick="applyOptions();">Apply</button>
+			</span>
 		</span>
 	</caption>
 	<thead>
