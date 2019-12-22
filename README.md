@@ -3,11 +3,12 @@ A single-file serverlist in pure Javascript for the game *Ace of Spades Classic*
 
 ## Features
 - Simple and clean layout
-- **Fast-loading**: no images or other externals (except the servers json)
-- Not necessary to host it online, just **open it from your local computer**
-- All columns sortable (always additionally sorted by servername and version)
-- Easily **configurable:**
+- Fast-loading: no images or other externals (except the servers json)
+- Can also be opened from your local computer
+- All columns sortable
+- Configuration options:
 	- Dark/light theme
-	- Highlight your keywords (like your favorite servernames, gamemodes or maps)
-	- Click will open server links or always copy them to clipboard instead
-	- Optionally display a localhost link or a refresh button
+	- Highlight keywords (like servernames, gamemodes or maps)
+	- Open server urls or copy url to clipboard instead
+	- Optional display of localhost link or refresh button
+	- Secondary sorting
